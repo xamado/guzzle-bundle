@@ -1,0 +1,25 @@
+{
+    "name": "xamado/guzzle-bundle",
+    "type": "symfony-bundle",
+    "description": "Guzzle bundle to use with Symfony 2",
+    "keywords": ["guzzle", "bundle"],
+    "homepage": "http://github.com/Xamado/GuzzleBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Xavier Amado",
+            "email": "xamado@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "require-dev": {
+        "symfony/framework-bundle": ">=2.1,<2.2-dev"
+    },
+    "autoload": {
+        "psr-0": { "Xamado\\GuzzleBundle": "" }
+    },
+    "minimum-stability": "dev",
+    "target-dir": "Xamado/GuzzleBundle"
+}

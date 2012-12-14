@@ -1,0 +1,7 @@
+parameters:
+#    xamado_guzzle.example.class: Xamado\GuzzleBundle\Example
+
+services:
+#    xamado_guzzle.example:
+#        class: %xamado_guzzle.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
