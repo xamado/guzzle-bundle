@@ -1,3 +1,0 @@
-xamado_guzzle_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: XamadoGuzzleBundle:Default:index }

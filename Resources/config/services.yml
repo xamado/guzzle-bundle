@@ -1,7 +1,14 @@
 parameters:
-#    xamado_guzzle.example.class: Xamado\GuzzleBundle\Example
+    guzzle.client.class: Guzzle\Service\Client
+    guzzle.service_description.class: Guzzle\Service\Description\ServiceDescription
+    guzzle.listener.command_listener.class: Xamado\GuzzleBundle\Service\Command\CommandListener
+    guzzle.response_parser.serializer.class: Xamado\GuzzleBundle\Service\Command\SerializerResponseParser
 
 services:
-#    xamado_guzzle.example:
-#        class: %xamado_guzzle.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    guzzle.response_parser.serializer:
+        class: %guzzle.response_parser.serializer.class%
+
+    guzzle.listener.command_listener:
+        class: %guzzle.listener.command_listener.class%
+        arguments:
+            - @guzzle.response_parser.serializer
