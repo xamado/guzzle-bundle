@@ -3,6 +3,7 @@ parameters:
     guzzle.service_description.class: Guzzle\Service\Description\ServiceDescription
     guzzle.listener.command_listener.class: Xamado\GuzzleBundle\Service\Command\CommandListener
     guzzle.response_parser.serializer.class: Xamado\GuzzleBundle\Service\Command\SerializerResponseParser
+    guzzle.data_collector.requests_collector.class: Xamado\GuzzleBundle\DataCollector\GuzzleDataCollector
 
 services:
     guzzle.client.abstract:
@@ -28,3 +29,8 @@ services:
         class: %guzzle.listener.command_listener.class%
         arguments:
             - @guzzle.response_parser.serializer
+
+    guzzle.data_collector.requests_collector:
+        class: %guzzle.data_collector.requests_collector.class%
+        tags:
+            - { name: data_collector, template: "XamadoGuzzleBundle:Profiler:layout", id: "requests_collector" }
