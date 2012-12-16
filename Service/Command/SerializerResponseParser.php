@@ -47,17 +47,12 @@ class SerializerResponseParser implements ResponseParserInterface
      */
     public function parseForContentType(AbstractCommand $command, Response $response, $contentType)
     {
-        $result = $response;
-
         $serializerType = $this->serializableTypes[$contentType];
 
-        /*if ($result->getBody()) {
-            if (stripos($contentType, 'json') !== false) {
-                $result = $result->json();
-            } if (stripos($contentType, 'xml') !== false) {
-                $result = $result->xml();
-            }
-        }*/
+        $body = $response->getBody();
+        $class = $command->getOperation()->getResponseClass();
+
+        $result = $this->serializer->deserialize($body, $class, $serializerType);
 
         return $result;
     }

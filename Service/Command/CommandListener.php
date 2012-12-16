@@ -5,6 +5,7 @@ namespace Xamado\GuzzleBundle\Service\Command;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Guzzle\Common\Event;
+use Guzzle\Service\Command\AbstractCommand;
 
 use Xamado\GuzzleBundle\Service\Command\SerializerResponseParser;
 
@@ -27,7 +28,9 @@ class CommandListener implements EventSubscriberInterface
     public function onCommandCreate(Event $event)
     {
         $command = $event['command'];
+        $responseType = $command->getOperation()->getResponseType();
 
-        $command->setResponseParser($this->responseParser);
+        if($responseType == 'class')
+            $command->setResponseParser($this->responseParser);
     }
 }

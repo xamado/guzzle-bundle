@@ -5,8 +5,24 @@ parameters:
     guzzle.response_parser.serializer.class: Xamado\GuzzleBundle\Service\Command\SerializerResponseParser
 
 services:
+    guzzle.client.abstract:
+        class: %guzzle.client.class%
+        abstract: true
+        tags:
+            - { name: guzzle.client }
+        calls:
+            - [ addSubscriber, [ @guzzle.listener.command_listener ]]
+
+    guzzle.service_description.abstract:
+        class: %guzzle.service_description.class%
+        abstract: true
+        factory_class: %guzzle.service_description.class%
+        factory_method: factory
+
     guzzle.response_parser.serializer:
         class: %guzzle.response_parser.serializer.class%
+        arguments:
+            - @serializer
 
     guzzle.listener.command_listener:
         class: %guzzle.listener.command_listener.class%
