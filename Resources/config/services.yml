@@ -5,6 +5,12 @@ parameters:
     guzzle.response_parser.serializer.class: Xamado\GuzzleBundle\Service\Command\SerializerResponseParser
     guzzle.data_collector.requests_collector.class: Xamado\GuzzleBundle\DataCollector\GuzzleDataCollector
 
+    guzzle.log_adapter.monolog.class: Guzzle\Log\MonologLogAdapter
+    guzzle.log_adapter.array.class: Guzzle\Log\ArrayLogAdapter
+    guzzle.plugin.log.class: Guzzle\Plugin\Log\LogPlugin
+
+    guzzle.debug.plugin.timeline.class: Xamado\GuzzleBundle\Debug\TimelinePlugin
+
 services:
     guzzle.client.abstract:
         class: %guzzle.client.class%
@@ -13,6 +19,9 @@ services:
             - { name: guzzle.client }
         calls:
             - [ addSubscriber, [ @guzzle.listener.command_listener ]]
+            - [ addSubscriber, [ @guzzle.plugin.log.monolog ]]
+            - [ addSubscriber, [ @guzzle.plugin.log.array ]]
+            - [ addSubscriber, [ @guzzle.debug.plugin.timeline ]]
 
     guzzle.service_description.abstract:
         class: %guzzle.service_description.class%
@@ -33,4 +42,33 @@ services:
     guzzle.data_collector.requests_collector:
         class: %guzzle.data_collector.requests_collector.class%
         tags:
-            - { name: data_collector, template: "XamadoGuzzleBundle:Profiler:layout", id: "requests_collector" }
+            - { name: data_collector, template: "XamadoGuzzleBundle:Collector:guzzle", id: "guzzle" }
+        arguments:
+            - @guzzle.log_adapter.array
+
+    guzzle.log_adapter.monolog:
+        class: %guzzle.log_adapter.monolog.class%
+        arguments:
+            - @logger
+        tags:
+            - { name: monolog.logger, channel: guzzle }
+
+    guzzle.log_adapter.array:
+        class: %guzzle.log_adapter.array.class%
+        arguments:
+            - @logger
+
+    guzzle.plugin.log.monolog:
+        class: %guzzle.plugin.log.class%
+        arguments:
+            - @guzzle.log_adapter.monolog
+
+    guzzle.plugin.log.array:
+        class: %guzzle.plugin.log.class%
+        arguments:
+            - @guzzle.log_adapter.array
+
+    guzzle.debug.plugin.timeline:
+        class: %guzzle.debug.plugin.timeline.class%
+        arguments:
+            - @debug.stopwatch

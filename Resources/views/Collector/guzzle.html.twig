@@ -1,0 +1,121 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {# the web debug toolbar content #}
+
+    {% set icon %}
+        <img width="18" height="28" alt="Guzzle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAcCAYAAABsxO8nAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB9wJFA0kAmx9x5QAAAAdaVRYdENvbW1lbnQAAAAAAENyZWF0ZWQgd2l0aCBHSU1QZC5lBwAAAsRJREFUOMvdlL1vXUUQxc+ZXV/HJCSiQRRBdOHDEYVrR5Gf3vWHrMjPtHTQ5m9IRQtI/AE0NDS2sYSc5+cPCSwUKVKE5BRBKD1ShEgsEM593pmh2Wvte3kE6kxz9652f3PmzNwLvLLBdrGwsPAGyTkRaQAYACVZkUyDweDe/wJ1Op2eiGzFGEESIQSYGcwMAODup7u7u6/9J6jb7T6cmpq6XlXVdRG5TDK6u6rqM1X9xszmRGQ2pfRrVVX3qqr6dGNj4/gF0PLy8o/T09M3tre3OZ5pbW1tXVU3U0pz/X7/59XVVQ8hIMb44ebm5sP2nAAAyQsvUf02SZAc5vebqorhcHjc6/XeHQEBeK6qk2sn/zAzkEzZr5OU0klKCSml+yOglNJTd58IOjs7g6rC3U8BwMwigGMz+0VVL7fnIgCo6pOmabCysrKVWz/j7n8COBsOhx+TRIzxBAD6/f6DxcXF70h+nlLCOOiZmUFVeyTbks7bH2PEzs7OSXtpMBh80e12ZwB8NgIys6chBLg7Wq/cHdlkmBnquva8t7W3t/eRiNwv7Yj5kpsZRKQ0Ga26lBJIfk/yfQDrnU6n0zTNkxDCKKj8VEqYmSGEgJQSjo6ObuWv4CcAKyQPyk7HfPnvdqOUKyJQ1XNluYtBRC4AuFruS87srbHt8yXxG8lHAJpSfbu6KCIY96lVV8JJXnL3d0IId0miruvZc5CI/KuMcXgI4UqM8drh4eHvuaOzZWnPW0/GSyshOU4BXCwUflAq4qTs7g4RGW9AjDFWWd0PJN8rPZqZVJaIjMxTvvy6u7fz97W7r5dzdGmSNyGEF0DufiWEMJ3XjbtXpaLZcqJLv8wMMUbUdf1mVnQHwLW6rp3ktyLy6Hyi5+fnr4rIbRF5bGZ/5Z+YAJgRkbdCCGl/f//LNtnS0tJNVf3E3R8cHBx8hVc7/gEz5WHvMjpIQQAAAABJRU5ErkJggg==" />
+        <span class="sf-toolbar-status">{{ collector.requests | length }}</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Requests</b>
+            <span>{{ collector.requests | length }}</span>
+        </div>
+    {% endset %}
+
+    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': profiler_url } %}
+
+{% endblock %}
+
+{% block menu %}
+    {# the menu content #}
+    <span class="label">
+        <span class="icon"><img src="{{ asset('bundles/misdguzzle/images/profiler/guzzle.png') }}" alt=""/></span>
+        <strong>Guzzle</strong>
+        <span class="count">
+            <span>{{ collector.requests | length }}</span>
+        </span>
+{% endblock %}
+
+{% block panel %}
+    {# the panel content #}
+
+    <h2>Guzzle HTTP requests</h2>
+
+    {% if collector.requests | length == 0 %}
+        <p>
+            <em>No requests sent.</em>
+        </p>
+    {% else %}
+        <ul class="alt">
+            {% for i, request in collector.requests %}
+                <li class="{{ cycle(['odd', 'even'], i) }}">
+                    <div style="margin-top: 4px" id="queryNo-{{ i }}">
+
+                        <div onclick="return expandRequest(this);" title="Expand query" data-target-id="code-{{ i }}" style="cursor: pointer;">
+                            <img alt="+" src="{{ asset('bundles/framework/images/blue_picto_more.gif') }}" style="display: inline;" />
+                            <img alt="-" src="{{ asset('bundles/framework/images/blue_picto_less.gif') }}" style="display: none;" />
+
+                            <span style="display: none">Shrink Request</span>
+                                <span id="smallcode-{{ i }}">
+                                    {{ request.message }}
+                                </span>
+                        </div>
+
+                        <code id="code-{{ i }}">
+                            <strong>Request:</strong>
+                            <pre style="background-color: {{ cycle(['#F1F7E2 ', 'white'], i) }}; white-space: pre-wrap; white-space: -moz-pre-wrap !important; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ request.request_headers }}{{ request.request_body }}</pre>
+
+                            <strong>Response:</strong>
+                            <div style="background-color: {{ cycle(['#F1F7E2 ', 'white'], i) }}; white-space: pre-wrap; white-space: -moz-pre-wrap !important; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ request.response_headers }}{{ request.response_body }}</div>
+                        </code>
+
+                        <small>
+                            Time: 500ms
+                        </small>
+
+                        <div id="explain-{{ i }}" style="display:none; padding-top: 1em;">
+
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script type="text/javascript">//<![CDATA[
+    function expandRequest(link)
+    {
+        var sections = link.children,
+            target = link.getAttribute('data-target-id'),
+            targetId = target.replace('code', '');
+
+        if (document.getElementById('small' + target).style.display != 'none')
+        {
+            document.getElementById('small' + target).style.display = 'none';
+            document.getElementById(target).style.display = 'inline';
+
+            sections[0].style.display = 'none';
+            sections[1].style.display = 'inline';
+            sections[2].style.display = 'inline';
+        }
+        else
+        {
+            document.getElementById('small' + target).style.display = 'inline';
+            document.getElementById(target).style.display = 'none';
+
+            sections[0].style.display = 'inline';
+            sections[1].style.display = 'none';
+            sections[2].style.display = 'none';
+        }
+
+        return false;
+    }
+    //]]></script>
+
+    <style>
+        h3 {
+            margin-bottom: 0px;
+        }
+
+        code {
+            display: none;
+        }
+
+        code pre {
+            padding: 5px;
+        }
+    </style>
+{% endblock %}
