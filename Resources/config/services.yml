@@ -71,4 +71,4 @@ services:
     guzzle.debug.plugin.timeline:
         class: %guzzle.debug.plugin.timeline.class%
         arguments:
-            #- @?debug.stopwatch
+            - @?debug.stopwatch
