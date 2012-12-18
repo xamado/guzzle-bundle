@@ -11,7 +11,7 @@ class TimelinePlugin implements EventSubscriberInterface
 {
     private $stopwatch;
 
-    public function __construct(Stopwatch $stopwatch)
+    public function __construct(Stopwatch $stopwatch = null)
     {
         $this->stopwatch = $stopwatch;
     }
@@ -26,12 +26,18 @@ class TimelinePlugin implements EventSubscriberInterface
 
     public function onRequestBeforeSend(Event $event)
     {
+        if($this->stopwatch == null)
+            return;
+
         $name = (string) $event['request']->getPath();
         $this->stopwatch->start('guzzle ('.$name.')');
     }
 
     public function onRequestComplete(Event $event)
     {
+        if($this->stopwatch == null)
+            return;
+
         $name = (string) $event['request']->getPath();
         $this->stopwatch->stop('guzzle ('.$name.')');
     }
